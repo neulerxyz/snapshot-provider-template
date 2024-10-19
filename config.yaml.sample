@@ -1,0 +1,17 @@
+#execution config
+geth_rpc_url: "http://localhost:8545"
+geth_client_name: "<execution_name>"
+geth_service_name: "geth.service"
+geth_data_dir: "/path/to/geth/chaindata"
+#consensus config
+cosmos_rpc_url: "http://localhost:26657/status"
+cosmos_client_name: "<cosmos_name>"
+cosmos_service_name: "<cosmos_bin>.service"
+cosmos_data_dir: "/path/to/cosmos/data"
+#snapshot config
+geth_snapshot_type: "pruned"
+cosmos_snapshot_type: "archive"
+snapshot_dir: "/path/to/public/snapshots"
+snapshot_interval_hours: 4
+log_file: "path/to/public/snapshot_service.log"
+server_port: 8080
