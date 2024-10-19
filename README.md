@@ -19,8 +19,8 @@ A Go-based service for creating and managing blockchain snapshots from Geth (Eth
    ```
 2. **Build the project**:
 ```bash
-make build-snapshot-creator 
-make build-file-server
+make snapshot-creator 
+make file-server
 ```
 3. **Create `config.yaml` **:
 ```yaml
@@ -45,8 +45,8 @@ server_port: 8080
 
 ## Usage 
 ```bash
-#config file is at root folder of the project
-./bin/snapshot_creator --config ./ 
+#run it in background (locate it using ps aux | grep "snapshot_creator" and kill it)
+./bin/snapshot_creator --config ./ > snapshot_creator.log 2>&1 & 
 ```
 
 ## Nginx integration 
