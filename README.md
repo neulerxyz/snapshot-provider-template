@@ -46,8 +46,12 @@ server_port: 8080
 ## Usage 
 ```bash
 #run it in background (locate it using ps aux | grep "snapshot_creator" and kill it)
-./bin/snapshot_creator --config ./ > snapshot_creator.log 2>&1 & 
+./bin/snapshot_creator --config ./ &
+#run it in background (locate it using ps aux | grep "file_server" and kill it)
+./bin/file_server --config ./ & 
 ```
+
+
 
 ## Nginx integration 
 the server is hosting the files on port 8080, so just create a nginx config with your domain and make it tsl/ssl 
