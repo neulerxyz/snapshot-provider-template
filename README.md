@@ -10,6 +10,9 @@ A Go-based service for creating and managing blockchain snapshots from Geth (Eth
 - Service management: stop nodes, create snapshots, and restart nodes automatically.
 - Simple integration with Nginx for HTTPS serving.
 
+## Dependencies
+[go](https://go.dev/dl/) - tested on go version go1.22
+
 ## Installation
 
 1. **Clone the repository**:
@@ -17,8 +20,10 @@ A Go-based service for creating and managing blockchain snapshots from Geth (Eth
    git clone https://github.com/yourusername/snapshot-service.git
    cd snapshot-service
    ```
+
 2. **Build the project**:
 ```bash
+go mod tidy
 make snapshot-creator 
 make file-server
 ```
