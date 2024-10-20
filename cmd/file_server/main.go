@@ -35,8 +35,8 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", listFilesHandler(cfg))
 	r.PathPrefix("/snapshots/").Handler(http.StripPrefix("/snapshots/", http.FileServer(http.Dir(cfg.SnapshotDir))))
-	log.Printf("Starting server on :%d...", cfg.ServerPort)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.ServerPort), r))
+	logrus.Printf("Starting server on :%d...", cfg.ServerPort)
+	logrus.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.ServerPort), r))
 }
 
 func listFilesHandler(cfg *config.Config) http.HandlerFunc {
