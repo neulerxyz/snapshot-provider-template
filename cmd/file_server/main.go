@@ -43,26 +43,33 @@ func listFilesHandler(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 
-		dirs := []string{
-			filepath.Join(cfg.SnapshotDir, cfg.GethClientName),
-			filepath.Join(cfg.SnapshotDir, cfg.CosmosClientName),
-		}
+		clients := []string{cfg.GethClientName, cfg.CosmosClientName}
 
-		for _, dir := range dirs {
-			files, err := os.ReadDir(dir)
+		// Loop over both clients (geth/cosmos)
+		for _, client := range clients {
+			clientDir := filepath.Join(cfg.SnapshotDir, client)
+
+			// Read files from client directory
+			files, err := os.ReadDir(clientDir)
 			if err != nil {
-				http.Error(w, fmt.Sprintf("Error reading directory %s: %v", dir, err), http.StatusInternalServerError)
-				return
+				fmt.Fprintf(w, "Error reading directory %s: %v<br>", clientDir, err)
+				continue
 			}
 
-			fmt.Fprintf(w, "<h2>%s</h2>\n", filepath.Base(dir))
+			// Display client name (Geth or Cosmos)
+			fmt.Fprintf(w, "<h2>%s</h2>\n", client)
 
+			// List all files in the directory
 			for _, file := range files {
 				if !file.IsDir() {
-					filePath := filepath.Join(filepath.Base(dir), file.Name())
+					filePath := filepath.Join(client, file.Name())
 					fmt.Fprintf(w, `<a href="/snapshots/%s">%s</a><br>`, filePath, file.Name())
 				}
 			}
+
+			// Add the latest snapshot link (e.g., geth_pruned_latest.tar.lz4)
+			latestFile := fmt.Sprintf("%s_%s_latest.tar.lz4", client, cfg.GethSnapshotType)
+			fmt.Fprintf(w, `<a href="/snapshots/%s">Latest %s Snapshot (%s)</a><br>`, latestFile, client, cfg.GethSnapshotType)
 		}
 	}
 }

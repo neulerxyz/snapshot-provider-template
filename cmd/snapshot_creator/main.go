@@ -108,6 +108,20 @@ func runSnapshotProcess(cfg *config.Config) {
 			logrus.Infof("%s snapshot created at %s", cfg.CosmosClientName, cosmosSnapshotFile)
 		}
 
+		logrus.Infof("Updating latest %s snapshot...", cfg.GethClientName)
+		// Update latest link for Geth snapshot using the config value for client name
+		err := updateLatestSymlink(cfg.SnapshotDir, cfg.GethClientName, gethSnapshotFile, cfg.GethSnapshotType)
+		if err != nil {
+			log.Printf("Error updating symlink for Geth: %v", err)
+		}
+
+		logrus.Infof("Updating latest %s snapshot...", cfg.CosmosClientName)
+		// Update latest link for Cosmos snapshot using the config value for client name
+		err = updateLatestSymlink(cfg.SnapshotDir, cfg.CosmosClientName, cosmosSnapshotFile, cfg.CosmosSnapshotType)
+		if err != nil {
+			log.Printf("Error updating symlink for Cosmos: %v", err)
+		}
+
 		logrus.Infof("Restarting %s and %s nodes...", cfg.GethClientName, cfg.CosmosClientName)
 		if err := snapshot.StartService(cfg.GethServiceName); err != nil {
 			logrus.Errorf("Error starting %s service: %v", cfg.GethClientName, err)
@@ -150,4 +164,29 @@ func retainSnapshots(snapshotDir, prefix string, maxSnapshots int) {
 			}
 		}
 	}
+}
+
+// Function to update the symlink for the latest snapshot
+func updateLatestSymlink(snapshotDir, clientName, snapshotFileName, snapshotType string) error {
+	// Create the symlink name (e.g., geth_pruned_latest.tar.lz4)
+	latestSymlink := filepath.Join(snapshotDir, fmt.Sprintf("%s_%s_latest.tar.lz4", clientName, snapshotType))
+	// Remove the existing symlink if it exists
+	err := os.Remove(latestSymlink)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+
+	// Create a new symlink pointing to the latest snapshot file
+	relativeSnapshotFile, err := filepath.Rel(snapshotDir, snapshotFileName) // Get relative path
+	if err != nil {
+		return err
+	}
+
+	err = os.Symlink(relativeSnapshotFile, latestSymlink)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Updated symlink: %s -> %s", latestSymlink, relativeSnapshotFile)
+	return nil
 }
