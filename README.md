@@ -5,6 +5,7 @@ A Go-based service for creating and managing blockchain snapshots from Geth (Eth
 ## Features
 
 - Automated Geth and Cosmos snapshot creation.
+- symlink the latest generated snapshot for a static download url.
 - Configurable retention policy to keep only the latest `n` snapshots.
 - Organized storage in subdirectories (`geth/` and `cosmos/`).
 - Service management: stop nodes, create snapshots, and restart nodes automatically.
